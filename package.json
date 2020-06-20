@@ -1,0 +1,22 @@
+{
+  "name": "koa-login-session",
+  "version": "1.0.0",
+  "description": "Toy Project : Koa Login Session",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/0916dhkim/koa-login-practice.git"
+  },
+  "author": "Donghyeon Kim",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/0916dhkim/koa-login-practice/issues"
+  },
+  "homepage": "https://github.com/0916dhkim/koa-login-practice#readme",
+  "dependencies": {
+    "koa": "^2.12.1"
+  }
+}
