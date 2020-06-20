@@ -17,6 +17,10 @@
   },
   "homepage": "https://github.com/0916dhkim/koa-login-practice#readme",
   "dependencies": {
-    "koa": "^2.12.1"
+    "koa": "^2.12.1",
+    "typescript": "^3.9.5"
+  },
+  "devDependencies": {
+    "@types/koa": "^2.11.3"
   }
 }

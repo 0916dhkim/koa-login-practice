@@ -1,4 +1,4 @@
-const Koa = require("koa");
+import * as Koa from "koa";
 const app = new Koa();
 
 app.use(ctx => {
