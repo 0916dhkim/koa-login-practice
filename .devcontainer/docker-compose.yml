@@ -2,13 +2,11 @@ version: '3.7'
 
 x-environment:
     &default-environment
-    POSTGRES_HOST: db
     POSTGRES_USER: vscode
     POSTGRES_PASSWORD: notsecure
     POSTGRES_DB: tutorial
-    POSTGRES_PORT: 5432
-    REDIS_HOST: session
-    REDIS_PORT: 6379
+    DATABASE_URL: "postgresql://vscode:notsecure@db:5432/tutorial"
+    REDIS_URL: "redis://session:6379"
     COOKIE_SECRET: to_sign_cookies
 services:
     app:

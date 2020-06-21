@@ -1,13 +1,10 @@
 import * as pgp from "pg-promise";
 import * as bcrypt from "bcrypt";
 
-const db = pgp()({
-    host: process.env.POSTGRES_HOST,
-    port: process.env.POSTGRES_PORT === undefined ? undefined : parseInt(process.env.POSTGRES_PORT),
-    database: process.env.POSTGRES_DB,
-    user: process.env.POSTGRES_USER,
-    password: process.env.POSTGRES_PASSWORD
-});
+if (process.env.DATABASE_URL === undefined) {
+    throw new Error("Database URL is not defined.");
+}
+const db = pgp()(process.env.DATABASE_URL);
 
 interface User {
     id: number;
