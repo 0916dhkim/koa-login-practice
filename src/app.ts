@@ -2,13 +2,31 @@ import * as Koa from "koa";
 import * as serve from "koa-static";
 import * as Router from "@koa/router";
 import * as bodyParser from "koa-bodyparser";
+import * as session from "koa-session";
+import * as redisStore from "koa-redis";
 import * as bcrypt from "bcrypt";
 import { resolve } from "path";
 import { UserAdapter } from "./user_adapter";
 
 const app = new Koa();
-const router = new Router();
+const router: Router<any, {
+    session: {
+        userId?: number
+    }
+}> = new Router();
 const userAdapter = new UserAdapter();
+
+// Session.
+app.keys = [
+    process.env.COOKIE_SECRET || "secret"
+];
+app.use(session({
+    store: redisStore({
+        host: process.env.REDIS_HOST,
+        port: process.env.REDIS_PORT === undefined ? undefined : parseInt(process.env.REDIS_PORT)
+    }),
+    secure: false
+}, app))
 
 // Login.
 router.post("/login", async (ctx, next) => {
@@ -24,6 +42,7 @@ router.post("/login", async (ctx, next) => {
             // Password mismatch.
             throw new Error("Failed to login.");
         }
+        ctx.session.userId = user.id;
         ctx.body = {
             message: "OK"
         };

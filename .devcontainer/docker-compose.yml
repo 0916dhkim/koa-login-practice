@@ -2,9 +2,14 @@ version: '3.7'
 
 x-environment:
     &default-environment
+    POSTGRES_HOST: db
     POSTGRES_USER: vscode
     POSTGRES_PASSWORD: notsecure
     POSTGRES_DB: tutorial
+    POSTGRES_PORT: 5432
+    REDIS_HOST: session
+    REDIS_PORT: 6379
+    COOKIE_SECRET: to_sign_cookies
 services:
     app:
         build:
@@ -28,5 +33,10 @@ services:
         volumes:
             - pgdata:/var/lib/postgresql/data
             - ../postgresql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    session:
+        image: "redis:6"
+        restart: unless-stopped
+        ports:
+            - 6379:6379
 volumes:
     pgdata:
