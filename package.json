@@ -4,6 +4,9 @@
   "description": "Toy Project : Koa Login Session",
   "main": "app.js",
   "scripts": {
+    "build": "tsc",
+    "start": "node dist/app.js",
+    "prestart": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
