@@ -6,6 +6,7 @@ import * as session from "koa-session";
 import * as redisStore from "koa-redis";
 import * as bcrypt from "bcrypt";
 import { resolve } from "path";
+import { createReadStream } from "fs";
 import { UserAdapter } from "./user_adapter";
 
 const app = new Koa();
@@ -28,16 +29,31 @@ app.use(session({
     secure: false
 }, app))
 
+// Index.
 router.get("/", (ctx, next) => {
     if (ctx.session === null || ctx.session.userId === undefined) {
         // Not logged in.
-        ctx.redirect("/login.html");
-        return;
+        ctx.redirect("/login");
     }
-    ctx.redirect("/index.html");
+    try {
+        // Send index page.
+        ctx.type = "html";
+        ctx.body = createReadStream("static/index.html");
+    } catch (e) {
+        next();
+    }
 });
 
 // Login.
+router.get("/login", (ctx, next) => {
+    try {
+        // Send login page.
+        ctx.type = "html";
+        ctx.body = createReadStream("static/login.html");
+    } catch (e) {
+        next();
+    }
+});
 router.post("/login", async (ctx, next) => {
     try {
         if (typeof ctx.request.body.email !== "string") {
@@ -67,7 +83,7 @@ router.post("/login", async (ctx, next) => {
 // Logout.
 router.get("/logout", (ctx, next) => {
     ctx.session = null;
-    ctx.redirect("/login.html");
+    ctx.redirect("/");
 });
 
 // Create user.
@@ -94,7 +110,6 @@ router.post("/user", async (ctx, next) => {
 
 app.use(bodyParser());
 app.use(router.routes()).use(router.allowedMethods());
-app.use(serve(resolve("static")));
 app.use(serve(resolve("dist")));
 
 app.listen(process.env.PORT, () => {
