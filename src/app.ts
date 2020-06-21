@@ -12,7 +12,7 @@ const app = new Koa();
 const router: Router<any, {
     session: {
         userId?: number
-    }
+    } | null
 }> = new Router();
 const userAdapter = new UserAdapter();
 
@@ -28,6 +28,15 @@ app.use(session({
     secure: false
 }, app))
 
+router.get("/", (ctx, next) => {
+    if (ctx.session === null || ctx.session.userId === undefined) {
+        // Not logged in.
+        ctx.redirect("/login.html");
+        return;
+    }
+    ctx.redirect("/index.html");
+});
+
 // Login.
 router.post("/login", async (ctx, next) => {
     try {
@@ -42,16 +51,23 @@ router.post("/login", async (ctx, next) => {
             // Password mismatch.
             throw new Error("Failed to login.");
         }
+        if (ctx.session === null) {
+            throw new Error("Failed to set session.");
+        }
         ctx.session.userId = user.id;
-        ctx.body = {
-            message: "OK"
-        };
+        ctx.redirect("/");
     } catch (e) {
         ctx.status = 400; // Bad request
         ctx.body = {
             error: e.message
         };
     }
+});
+
+// Logout.
+router.get("/logout", (ctx, next) => {
+    ctx.session = null;
+    ctx.redirect("/login.html");
 });
 
 // Create user.
