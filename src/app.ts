@@ -23,8 +23,7 @@ app.keys = [
 ];
 app.use(session({
     store: redisStore({
-        host: process.env.REDIS_HOST,
-        port: process.env.REDIS_PORT === undefined ? undefined : parseInt(process.env.REDIS_PORT)
+        url: process.env.REDIS_URL
     }),
     secure: false
 }, app))
@@ -62,7 +61,10 @@ router.post("/login", async (ctx, next) => {
         if (typeof ctx.request.body.password !== "string") {
             throw new Error("Malformed Request");
         }
-        const user = await userAdapter.getUserByEmail(ctx.request.body.email).catch(() => null);
+        const user = await userAdapter.getUserByEmail(ctx.request.body.email).catch((err) => {
+            console.error(err);
+            return null;
+        });
         if (user === null || !(await bcrypt.compare(ctx.request.body.password, user.bcryptPassword))) {
             // Password mismatch.
             throw new Error("Failed to login.");
@@ -88,7 +90,6 @@ router.get("/logout", (ctx, next) => {
 
 // Create user.
 router.post("/user", async (ctx, next) => {
-    console.table(ctx.request.body);
     if (typeof ctx.request.body.email !== "string") {
         return;
     }
