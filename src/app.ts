@@ -110,10 +110,7 @@ router.post("/user", async (ctx, next) => {
         if (user === null) {
             throw new Error("Failed to create user.");
         }
-        ctx.body = {
-            message: "OK",
-            id: user.id
-        };
+        ctx.redirect("/");
     } catch (e) {
         ctx.status = 500 // Internal error.
         ctx.body = {
