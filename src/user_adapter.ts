@@ -35,7 +35,12 @@ export class UserAdapter {
      * @param password new user's password
      * @returns created user info
      */
-    async createUser(email: string, password: string): Promise<User> {
+    async createUser(email: string, password: string): Promise<User | null> {
+        // Validate email.
+        const emailPattern = /\w+@\w+.\w+/;
+        if (!emailPattern.test(email)) {
+            return null;
+        }
         const bcryptPassword = await bcrypt.hash(password, 10);
         const user = await db.one("INSERT INTO my_user (email, bcrypt_password) VALUES ($1, $2) RETURNING id, email, bcrypt_password", [email, bcryptPassword]);
         return {
