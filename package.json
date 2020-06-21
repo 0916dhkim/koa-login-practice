@@ -6,7 +6,6 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/app.js",
-    "prestart": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -27,7 +26,9 @@
     "koa-redis": "^4.0.1",
     "koa-session": "^6.0.0",
     "koa-static": "^5.0.0",
-    "pg-promise": "^10.5.6",
+    "pg-promise": "^10.5.6"
+  },
+  "devDependencies": {
     "typescript": "^3.9.5",
     "@types/bcrypt": "^3.0.0",
     "@types/koa": "^2.11.3",
