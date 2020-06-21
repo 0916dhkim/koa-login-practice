@@ -82,6 +82,15 @@ router.post("/login", async (ctx, next) => {
     }
 });
 
+router.get("/signup", (ctx, next) => {
+    try {
+        ctx.type = "html";
+        ctx.body = createReadStream("static/signup.html");
+    } catch (e) {
+        next();
+    }
+});
+
 // Logout.
 router.get("/logout", (ctx, next) => {
     ctx.session = null;
@@ -98,8 +107,12 @@ router.post("/user", async (ctx, next) => {
     }
     try {
         const user = await userAdapter.createUser(ctx.request.body.email, ctx.request.body.password);
+        if (user === null) {
+            throw new Error("Failed to create user.");
+        }
         ctx.body = {
-            message: "OK"
+            message: "OK",
+            id: user.id
         };
     } catch (e) {
         ctx.status = 500 // Internal error.
